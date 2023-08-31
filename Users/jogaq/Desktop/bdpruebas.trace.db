@@ -1,0 +1,3 @@
+2023-08-22 21:02:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PEOPLE" not found (this database is empty); SQL statement:
+INSERT INTO PEOPLE (FIRST_NAME, LAST_NAME, DOB) VALUES(?, ?, ?) [42104-214]
