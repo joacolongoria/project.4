@@ -1,2 +1,7 @@
-package com.neutrinosys.peopledb.model;public interface Entity {
+package com.neutrinosys.peopledb.model;
+
+public interface Entity {
+    Long getId();
+
+    void setId(Long id);
 }

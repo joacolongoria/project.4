@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" tests="8" skipped="0" failures="0" errors="0" timestamp="2023-08-31T05:57:15" hostname="DESKTOP-IG7IGC5" time="0.653">
+<testsuite name="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" tests="8" skipped="0" failures="0" errors="0" timestamp="2023-09-07T19:08:47" hostname="DESKTOP-IG7IGC5" time="0.562">
   <properties/>
-  <testcase name="testPersonIdNotFound()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.324"/>
-  <testcase name="canDelete()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.085"/>
-  <testcase name="canFindPersonById()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.037"/>
-  <testcase name="experiment()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.034"/>
-  <testcase name="canSaveTwoPeople()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.042"/>
-  <testcase name="canUpdate()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.038"/>
-  <testcase name="canDeleteMultiplePeople()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.044"/>
-  <testcase name="canSaveOnePerson()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.032"/>
+  <testcase name="testPersonIdNotFound()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.309"/>
+  <testcase name="canDelete()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.071"/>
+  <testcase name="canFindPersonById()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.034"/>
+  <testcase name="experiment()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.021"/>
+  <testcase name="canSaveTwoPeople()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.026"/>
+  <testcase name="canUpdate()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.028"/>
+  <testcase name="canDeleteMultiplePeople()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.031"/>
+  <testcase name="canSaveOnePerson()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.028"/>
   <system-out><![CDATA[16
-Person{id=100, firstname='test', lastName='jackson', dob=2023-08-30T23:57:15.880303-06:00[America/Mexico_City]}
+Person{id=258, firstname='test', lastName='jackson', dob=2023-09-07T13:08:47.413753900-06:00[America/Mexico_City]}
 Records affected: 1
 17
 16
-Person{id=101, firstname='test', lastName='jackson', dob=2023-08-30T23:57:15.951112300-06:00[America/Mexico_City]}
+Person{id=259, firstname='test', lastName='jackson', dob=2023-09-07T13:08:47.491545200-06:00[America/Mexico_City]}
 Records affected: 1
 10,20,30,40,50
-Person{id=102, firstname='Javier', lastName='Smith', dob=1980-11-15T15:15-06:00}
+Person{id=260, firstname='Javier', lastName='Smith', dob=1980-11-15T15:15-06:00}
 Records affected: 1
-Person{id=103, firstname='Javier', lastName='Smith', dob=1980-11-15T15:15-06:00}
+Person{id=261, firstname='Javier', lastName='Smith', dob=1980-11-15T15:15-06:00}
 Records affected: 1
-Person{id=104, firstname='test', lastName='jackson', dob=2023-08-30T23:57:16.065805300-06:00[America/Mexico_City]}
+Person{id=262, firstname='test', lastName='jackson', dob=2023-09-07T13:08:47.568513400-06:00[America/Mexico_City]}
 Records affected: 1
-Person{id=105, firstname='test', lastName='jackson', dob=2023-08-30T23:57:16.109688100-06:00[America/Mexico_City]}
+Person{id=263, firstname='test', lastName='jackson', dob=2023-09-07T13:08:47.596437900-06:00[America/Mexico_City]}
 Records affected: 1
-Person{id=106, firstname='test', lastName='jackson', dob=2023-08-30T23:57:16.113678-06:00[America/Mexico_City]}
+Person{id=264, firstname='test', lastName='jackson', dob=2023-09-07T13:08:47.597435600-06:00[America/Mexico_City]}
 Records affected: 1
 2
-Person{id=107, firstname='John', lastName='Smith', dob=1980-11-15T15:15-06:00}
+Person{id=265, firstname='John', lastName='Smith', dob=1980-11-15T15:15-06:00}
 Records affected: 1
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>

@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-public class Person {
+public class Person implements Entity {
 
 
     private BigDecimal salary = new BigDecimal("0");
@@ -64,10 +64,12 @@ public class Person {
         this.lastName = lastName;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
