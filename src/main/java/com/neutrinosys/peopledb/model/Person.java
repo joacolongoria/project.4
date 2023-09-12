@@ -1,22 +1,34 @@
 package com.neutrinosys.peopledb.model;
 
+import com.neutrinosys.peopledb.annotation.Id;
+
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-public class Person implements Entity {
+public class Person {
 
 
     private BigDecimal salary = new BigDecimal("0");
+
+    @Id
     private Long id ;
+
     private String firstname;
     private String lastName;
 
     private ZonedDateTime dob;
+    private String email;
 
+    public String getEmail() {
+        return email;
+    }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public ZonedDateTime getDob() {
         return dob;
@@ -64,12 +76,12 @@ public class Person implements Entity {
         this.lastName = lastName;
     }
 
-    @Override
+
     public Long getId() {
         return id;
     }
 
-    @Override
+
     public void setId(Long id) {
         this.id = id;
     }

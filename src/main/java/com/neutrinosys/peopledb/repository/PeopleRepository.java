@@ -1,5 +1,7 @@
 package com.neutrinosys.peopledb.repository;
 
+import com.neutrinosys.peopledb.annotation.SQL;
+import com.neutrinosys.peopledb.model.CrudOperation;
 import com.neutrinosys.peopledb.model.Person;
 
 import java.math.BigDecimal;
@@ -9,7 +11,10 @@ import java.time.ZonedDateTime;
 
 public class PeopleRepository  extends CRUDRepository<Person>{
 
-    public static final String SAVE_PERSON_SQL = "INSERT INTO PEOPLE (FIRST_NAME, LAST_NAME, DOB) VALUES(?, ?, ?)";
+    public static final String SAVE_PERSON_SQL = """
+            INSERT INTO PEOPLE 
+            (FIRST_NAME, LAST_NAME, DOB, SALARY, EMAIL) 
+            VALUES(?, ?, ?, ?, ?)""";
     public static final String FIND_BY_ID_SQL = "SELECT ID, FIRST_NAME, LAST_NAME, DOB , SALARY FROM PEOPLE WHERE ID = ? ";
     public static final String FIND_ALL_SQL = "SELECT ID, FIRST_NAME, LAST_NAME, DOB , SALARY FROM PEOPLE";
     public static final String SELECT_COUNT_SQL = "SELECT COUNT(*) FROM PEOPLE";
@@ -22,23 +27,26 @@ public class PeopleRepository  extends CRUDRepository<Person>{
        super(connection) ;
     }
 
-    @Override
-    String getSaveSql() {
-        return SAVE_PERSON_SQL;
-    }
-
 
     @Override
+    @SQL(value = SAVE_PERSON_SQL,operationType = CrudOperation.SAVE)
     void mapForSave(Person entity, PreparedStatement ps) throws SQLException {
 
         ps.setString(1, entity.getFirstname());
         ps.setString(2, entity.getLastName());
         ps.setTimestamp(3, convertDobToTimestamp(entity.getDob()));
+        ps.setBigDecimal(4, entity.getSalary());
+        ps.setString(5, entity.getEmail());
 
 
     }
 
     @Override
+    @SQL(value = FIND_BY_ID_SQL,operationType = CrudOperation.FIND_BY_ID)
+    @SQL(value = FIND_ALL_SQL, operationType = CrudOperation.FIND_ALL)
+    @SQL(value = SELECT_COUNT_SQL, operationType = CrudOperation.COUNT)
+    @SQL(value = DELETE_SQL, operationType = CrudOperation.DELETE_ONE)
+
     Person extractEntityFromResultSet(ResultSet rs) throws SQLException {
         long personId = rs.getLong("ID");
         String firstName = rs.getString("FIRST_NAME");
@@ -49,6 +57,7 @@ public class PeopleRepository  extends CRUDRepository<Person>{
     }
 
     @Override
+    @SQL(value = UPDATE_SQL, operationType = CrudOperation.UPDATE)
     void mapForUpdate(Person entity, PreparedStatement ps) throws SQLException {
 
         ps.setString(1, entity.getFirstname());
@@ -56,32 +65,8 @@ public class PeopleRepository  extends CRUDRepository<Person>{
         ps.setTimestamp(3,convertDobToTimestamp(entity.getDob()));
         ps.setBigDecimal(4, entity.getSalary());
     }
-    @Override
-    protected String getFindByIdSql() {
-        return FIND_BY_ID_SQL;
-    }
-    @Override
-    protected String getFindAllSql() {
-        return FIND_ALL_SQL;
-    }
 
-    @Override
-    protected String getCountSql() {
-        return SELECT_COUNT_SQL;
-    }
-    @Override
-    protected String getDeleteSql() {
-        return DELETE_SQL;
-    }
 
-    @Override
-    protected String getDeleteInSql() {
-        return DELETE_IN_SQL;
-    }
-    @Override
-    protected String getUpdateSql() {
-        return UPDATE_SQL;
-    }
 
     private static Timestamp convertDobToTimestamp(ZonedDateTime dob) {
         return Timestamp.valueOf(dob.withZoneSameInstant(ZoneId.of("+0")).toLocalDateTime());

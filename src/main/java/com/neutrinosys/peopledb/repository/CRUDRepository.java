@@ -1,33 +1,56 @@
 package com.neutrinosys.peopledb.repository;
 
+import com.neutrinosys.peopledb.annotation.Id;
+import com.neutrinosys.peopledb.annotation.MultiSQL;
+import com.neutrinosys.peopledb.annotation.SQL;
 import com.neutrinosys.peopledb.exception.UnableToSaveException;
-import com.neutrinosys.peopledb.model.Entity;
+import com.neutrinosys.peopledb.model.CrudOperation;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
 
-abstract class CRUDRepository <T extends Entity>{
+abstract class CRUDRepository <T>{
     protected Connection connection;
 
     public CRUDRepository(Connection connection) {
         this.connection = connection;
     }
 
+    private String getSqlByAnnotation(CrudOperation operationType, Supplier<String> sqlGetter){
+        Stream<SQL> multiSqlStream = Arrays.stream(this.getClass().getDeclaredMethods())
+                .filter(m -> m.isAnnotationPresent(MultiSQL.class))
+                .map(m -> m.getAnnotation(MultiSQL.class))
+                .flatMap(msql -> Arrays.stream(msql.value()));
+
+        Stream<SQL> sqlStream = Arrays.stream(this.getClass().getDeclaredMethods())
+                .filter(m -> m.isAnnotationPresent(SQL.class))
+                .map(m -> m.getAnnotation(SQL.class));
+
+        return Stream.concat(multiSqlStream,sqlStream)
+               .filter(a -> a.operationType().equals(operationType))
+                .map(SQL::value)
+                .findFirst().orElseGet(sqlGetter);
+
+
+    }
+
     public T save(T entity)  throws UnableToSaveException {
         try {
-            PreparedStatement ps = connection.prepareStatement(getSaveSql(), Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(getSqlByAnnotation(CrudOperation.SAVE, this::getSaveSql), Statement.RETURN_GENERATED_KEYS);
             mapForSave(entity, ps);
             int recordsAffected = ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             while (rs.next()){
 
                 long id = rs.getLong(1);
-                entity.setId(id);
+                setIdByAnnotation(id,entity);
                 System.out.println(entity);
             }
             System.out.printf("Records affected: %d%n", recordsAffected);
@@ -41,7 +64,7 @@ abstract class CRUDRepository <T extends Entity>{
         T entity = null;
 
         try {
-            PreparedStatement ps = connection.prepareStatement(getFindByIdSql());
+            PreparedStatement ps = connection.prepareStatement(getSqlByAnnotation(CrudOperation.FIND_BY_ID,this::getFindByIdSql));
             ps.setLong(1,id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()){
@@ -59,7 +82,7 @@ abstract class CRUDRepository <T extends Entity>{
         List<T> entities = new ArrayList<>();
         try{
 
-            PreparedStatement ps = connection.prepareStatement(getFindAllSql());
+            PreparedStatement ps = connection.prepareStatement(getSqlByAnnotation(CrudOperation.FIND_ALL,this::getFindAllSql));
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
                 entities.add(extractEntityFromResultSet(rs));
@@ -76,7 +99,7 @@ abstract class CRUDRepository <T extends Entity>{
 
         long records = 0;
         try {
-            PreparedStatement ps = connection.prepareStatement(getCountSql());
+            PreparedStatement ps = connection.prepareStatement(getSqlByAnnotation(CrudOperation.COUNT,this::getCountSql));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 records = rs.getLong(1);
@@ -89,19 +112,51 @@ abstract class CRUDRepository <T extends Entity>{
 
     public void delete(T entity) {
         try {
-            PreparedStatement ps = connection.prepareStatement(getDeleteSql());
-            ps.setLong(1,entity.getId());
+            PreparedStatement ps = connection.prepareStatement(getSqlByAnnotation(CrudOperation.DELETE_ONE,this::getDeleteSql));
+            ps.setLong(1, getIdByAnnotation(entity));
             int affectedRecordCount = ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    private void setIdByAnnotation(Long id,T entity) {
+
+        Arrays.stream(entity.getClass().getDeclaredFields())
+                .filter(f -> f.isAnnotationPresent(Id.class))
+                .forEach(f -> {
+                    f.setAccessible(true);
+                    try {
+                        f.set(entity, id);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException("Unabled to set Id field value");
+                    }
+                });
+    }
+
+
+    private Long getIdByAnnotation(T entity){
+
+        return Arrays.stream(entity.getClass().getDeclaredFields())
+                .filter(f -> f.isAnnotationPresent(Id.class))
+                .map(f -> {
+                    f.setAccessible(true);
+                    Long id = null;
+                    try {
+                       id =  (long)f.get(entity);
+                    } catch (IllegalAccessException e) {
+                      e.printStackTrace();
+                    }
+                    return id;
+                })
+                .findFirst().orElseThrow(()-> new RuntimeException("No Id annotated field found"));
+    }
+
     public void delete (T...entities){
         try {
             Statement stmt = connection.createStatement();
-            String ids = Arrays.stream(entities).map(T::getId).map(String::valueOf).collect(joining(","));
-            int affectedRecordCount = stmt.executeUpdate(getDeleteInSql().replace(":ids", ids));
+            String ids = Arrays.stream(entities).map(e -> getIdByAnnotation(e)).map(String::valueOf).collect(joining(","));
+            int affectedRecordCount = stmt.executeUpdate(getSqlByAnnotation(CrudOperation.DELETE_MANY,this::getDeleteInSql).replace(":ids", ids));
             System.out.println(affectedRecordCount);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -112,22 +167,32 @@ abstract class CRUDRepository <T extends Entity>{
 
     public void update(T entity) {
         try {
-            PreparedStatement ps = connection.prepareStatement(getUpdateSql());
+            PreparedStatement ps = connection.prepareStatement(getSqlByAnnotation(CrudOperation.UPDATE,this::getUpdateSql));
             mapForUpdate(entity, ps);
-            ps.setLong(5, entity.getId());
+            ps.setLong(5, getIdByAnnotation(entity));
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();        }
     }
 
-    protected abstract String getUpdateSql();
+
 
 
     abstract  void mapForSave(T entity, PreparedStatement ps) throws SQLException ;
     abstract void mapForUpdate(T entity, PreparedStatement ps) throws SQLException ;
-    abstract String getSaveSql();
+
+
+
+    protected String getSaveSql(){throw new RuntimeException("SQL not defined.");}
+    protected  String getFindByIdSql(){throw new RuntimeException("SQL not defined.");};
+    protected  String getUpdateSql(){throw new RuntimeException("SQL not defined.");}
+    protected  String getFindAllSql(){throw new RuntimeException("SQL not defined.");};
+    protected  String getCountSql(){throw new RuntimeException("SQL not defined.");};
+    protected  String getDeleteSql(){throw new RuntimeException("SQL not defined.");};
+    protected  String getDeleteInSql(){throw new RuntimeException("SQL not defined.");};
 
     abstract T extractEntityFromResultSet(ResultSet rs) throws SQLException;
+
 
     /**
      *
@@ -135,15 +200,6 @@ abstract class CRUDRepository <T extends Entity>{
      * The sql must contain one SQL parameter, i.e "?"
      * that will bind to the entity´s ID.
      */
-
-    protected abstract String getFindByIdSql();
-    protected abstract String getFindAllSql();
-    protected abstract String getCountSql();
-    protected abstract String getDeleteSql();
-    protected abstract String getDeleteInSql();
-
-
-
 
 
 
