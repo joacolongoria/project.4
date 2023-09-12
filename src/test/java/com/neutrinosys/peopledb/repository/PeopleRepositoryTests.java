@@ -146,7 +146,7 @@ public class PeopleRepositoryTests {
     @Test
     public void loadData() throws IOException {
 
-        Files.lines(Path.of("/Users/jogaq/Desktop"))
+        Files.lines(Path.of("C:/Users/jogaq/Desktop"))
                 .skip(1)
                 .limit(100)
                 .map(l -> l.split(","))

@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" tests="1" skipped="0" failures="1" errors="0" timestamp="2023-09-12T22:11:12" hostname="DESKTOP-IG7IGC5" time="0.243">
+<testsuite name="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" tests="1" skipped="0" failures="1" errors="0" timestamp="2023-09-12T22:18:52" hostname="DESKTOP-IG7IGC5" time="0.292">
   <properties/>
-  <testcase name="loadData()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.243">
-    <failure message="java.lang.RuntimeException: java.nio.file.AccessDeniedException: \Users\jogaq\Desktop" type="java.lang.RuntimeException">java.lang.RuntimeException: java.nio.file.AccessDeniedException: \Users\jogaq\Desktop
-	at com.neutrinosys.peopledb.repository.PeopleRepositoryTests.loadData(PeopleRepositoryTests.java:167)
+  <testcase name="loadData()" classname="com.neutrinosys.peopledb.repository.PeopleRepositoryTests" time="0.292">
+    <failure message="java.nio.file.AccessDeniedException: C:\Users\jogaq\Desktop" type="java.nio.file.AccessDeniedException">java.nio.file.AccessDeniedException: C:\Users\jogaq\Desktop
+	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:89)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:103)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:108)
+	at java.base/sun.nio.fs.WindowsFileSystemProvider.newFileChannel(WindowsFileSystemProvider.java:121)
+	at java.base/java.nio.channels.FileChannel.open(FileChannel.java:298)
+	at java.base/java.nio.channels.FileChannel.open(FileChannel.java:357)
+	at java.base/java.nio.file.Files.lines(Files.java:4132)
+	at java.base/java.nio.file.Files.lines(Files.java:4227)
+	at com.neutrinosys.peopledb.repository.PeopleRepositoryTests.loadData(PeopleRepositoryTests.java:149)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -89,17 +97,6 @@
 	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:71)
 	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
 	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
-Caused by: java.nio.file.AccessDeniedException: \Users\jogaq\Desktop
-	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:89)
-	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:103)
-	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:108)
-	at java.base/sun.nio.fs.WindowsFileSystemProvider.newFileChannel(WindowsFileSystemProvider.java:121)
-	at java.base/java.nio.channels.FileChannel.open(FileChannel.java:298)
-	at java.base/java.nio.channels.FileChannel.open(FileChannel.java:357)
-	at java.base/java.nio.file.Files.lines(Files.java:4132)
-	at java.base/java.nio.file.Files.lines(Files.java:4227)
-	at com.neutrinosys.peopledb.repository.PeopleRepositoryTests.loadData(PeopleRepositoryTests.java:150)
-	... 85 more
 </failure>
   </testcase>
   <system-out><![CDATA[]]></system-out>
