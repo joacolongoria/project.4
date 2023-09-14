@@ -7,6 +7,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Person {
 
@@ -21,6 +22,7 @@ public class Person {
 
     private ZonedDateTime dob;
     private String email;
+    private Optional<Address> homeAddress = Optional.empty();
 
     public String getEmail() {
         return email;
@@ -118,5 +120,14 @@ public class Person {
     @Override
     public int hashCode() {
         return Objects.hash(id,firstname, lastName, dob);
+    }
+
+
+    public void setHomeAddress(Address homeAddress) {
+        this.homeAddress = Optional.ofNullable(homeAddress);
+    }
+
+    public Optional<Address> getHomeAddress() {
+        return homeAddress;
     }
 }

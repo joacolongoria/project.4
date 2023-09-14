@@ -16,10 +16,10 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
 
-abstract class CRUDRepository <T>{
+abstract class CrudRepository<T>{
     protected Connection connection;
 
-    public CRUDRepository(Connection connection) {
+    public CrudRepository(Connection connection) {
         this.connection = connection;
     }
 
@@ -51,9 +51,9 @@ abstract class CRUDRepository <T>{
 
                 long id = rs.getLong(1);
                 setIdByAnnotation(id,entity);
-                System.out.println(entity);
+              //  System.out.println(entity);
             }
-            System.out.printf("Records affected: %d%n", recordsAffected);
+           // System.out.printf("Records affected: %d%n", recordsAffected);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new UnableToSaveException("Tried to save entity: " + entity);

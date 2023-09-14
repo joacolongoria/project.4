@@ -1,8 +1,11 @@
 package com.neutrinosys.peopledb.repository;
 
+import com.neutrinosys.peopledb.model.Address;
 import com.neutrinosys.peopledb.model.Person;
+import com.neutrinosys.peopledb.model.Region;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -62,6 +65,17 @@ public class PeopleRepositoryTests {
         Person savedPerson2 = repo.save(Bobby);
         assertThat(savedPerson1.getId()).isNotEqualTo(savedPerson2.getId());
 
+    }
+
+    @Test
+    public void canSavePersonWithAddress(){
+
+        Person jonh = new Person("Javier", "Smith", ZonedDateTime.of(1980,11,15,15,15,0,0, ZoneId.of("-6")));
+        Address address = new Address(null, "123 Beale St.", "Apt. 1A", "Wala Wala", "WA","90210","United States","Fulton County", Region.WEST);
+        jonh.setHomeAddress(address);
+
+        Person savedPerson = repo.save(jonh);
+        assertThat(savedPerson.getHomeAddress().get().id()).isGreaterThan(0);
     }
 
     @Test
@@ -144,11 +158,12 @@ public class PeopleRepositoryTests {
 
 
     @Test
-    public void loadData() throws IOException {
+    @Disabled
+    public void loadData() throws IOException, SQLException {
 
-        Files.lines(Path.of("C:/Users/jogaq/Desktop"))
+        Files.lines(Path.of("C:/Users/jogaq/Desktop/Hr5m.csv"))
                 .skip(1)
-                .limit(100)
+                .limit(1)
                 .map(l -> l.split(","))
                 .map(a -> {
                     LocalDate dob = LocalDate.parse(a[10], DateTimeFormatter.ofPattern("M/d/yyyy"));
@@ -162,6 +177,7 @@ public class PeopleRepositoryTests {
 
                 })
                 .forEach(repo::save); //lo mismo a poner p -> repo.save(p)
+                connection.commit();
 
 
 
